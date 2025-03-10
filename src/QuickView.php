@@ -13,4 +13,10 @@ class QuickView
         $result .= '</ul>';
         return $result;
     }
+
+    public static function json(string $data, bool $isTerminal = false): string
+    {
+        return (new QuickViewJson())->json($data, $isTerminal);
+    }
+
 }
