@@ -2,11 +2,16 @@
 
 namespace OlegGanshonkov\QuickView;
 
-class QuickViewJson
+use OlegGanshonkov\QuickView\Interfaces\JsonFormatterInterface;
+
+class QuickViewJson implements JsonFormatterInterface
 {
-    public function json(string $data, bool $isTerminal = false): string
+    public function format(string $data, bool $isTerminal = false): string
     {
         $arr = json_decode($data, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('Invalid JSON data');
+        }
         $str = json_encode($arr, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return $isTerminal ? $this->colorizeJson($str) : $this->formatJsonForHtml($str);
     }

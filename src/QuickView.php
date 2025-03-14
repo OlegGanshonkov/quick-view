@@ -2,21 +2,31 @@
 
 namespace OlegGanshonkov\QuickView;
 
+use OlegGanshonkov\QuickView\Interfaces\UlGeneratorInterface;
+use OlegGanshonkov\QuickView\Interfaces\JsonFormatterInterface;
+
 class QuickView
 {
-    public function ul(array $data): string
-    {
-        $result = '<ul class="quick-view">';
-        foreach ($data as $item) {
-            $result .= '<li>' . $item . '</li>';
-        }
-        $result .= '</ul>';
-        return $result;
+    private $ulGenerator;
+    private $jsonFormatter;
+
+    public function __construct(
+        UlGeneratorInterface $ulGenerator = null,
+        JsonFormatterInterface $jsonFormatter = null
+    ) {
+        $this->ulGenerator = $htmlGenerator ?? new QuickViewUl();
+        $this->jsonFormatter = $jsonFormatter ?? new QuickViewJson();
     }
 
-    public static function json(string $data, bool $isTerminal = false): string
+    public function ul(array $data): string
     {
-        return (new QuickViewJson())->json($data, $isTerminal);
+        return $this->ulGenerator->ul($data);
+    }
+
+    public function json(string $data, bool $isTerminal = false): string
+    {
+        return $this->jsonFormatter->format($data, $isTerminal);
     }
 
 }
+
